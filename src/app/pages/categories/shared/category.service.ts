@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http'
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { observable,throwError, Observable }from "rxjs";
-import { map, catchError, flatMap }from "rxjs/operators";
+import { observable, throwError, Observable } from "rxjs";
+import { map, catchError, flatMap } from "rxjs/operators";
 
-import { Category }from "./category.model";
+import { Category } from "./category.model";
 import { templateJitUrl } from '@angular/compiler';
 
 @Injectable({
@@ -12,20 +12,20 @@ import { templateJitUrl } from '@angular/compiler';
 })
 export class CategoryService {
 
- private apiPath: string = "api/categories"
+  private apiPath: string = "api/categories"
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Category[]>{
+  getAll(): Observable<Category[]> {
     return this.http.get(this.apiPath).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategories)
     )
   }
 
-  getById(id:number): Observable<Category>{
-    const url = "${this.apiPath}/${id}";
-    
+  getById(id: number): Observable<Category> {
+    const url = `${this.apiPath}/${id}`;
+
     return this.http.get(url).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategorie)
@@ -33,45 +33,45 @@ export class CategoryService {
   }
 
 
-  create(category: Category): Observable<Category>{
+  create(category: Category): Observable<Category> {
     return this.http.post(this.apiPath, category).pipe(
       catchError(this.handleError),
       map(this.jsonDataToCategorie)
     )
   }
 
-update(category: Category): Observable<Category>{
-  const url = '${this.apiPath}/${category.id}'
+  update(category: Category): Observable<Category> {
+    const url = `${this.apiPath}/${category.id}`
 
-  return this.http.put(url, category).pipe(
-    catchError(this.handleError),
-    map(() => category)
-  )
-}
+    return this.http.put(url, category).pipe(
+      catchError(this.handleError),
+      map(() => category)
+    )
+  }
 
-delete(id: number): Observable<any>{
-  const url = "${this.apiPath}/${id}";
+  delete(id: number): Observable<any> {
+    const url = `${this.apiPath}/${id}`;
 
-  return this.http.delete(url).pipe(
-    catchError(this.handleError),
-    map(() => null)
-  )
-}
+    return this.http.delete(url).pipe(
+      catchError(this.handleError),
+      map(() => null)
+    )
+  }
 
   //PRIVATE METHODS
 
-  private jsonDataToCategories(jsonData: any[]): Category[]{
+  private jsonDataToCategories(jsonData: any[]): Category[] {
     const categories: Category[] = [];
     jsonData.forEach(element => categories.push(element as Category));
     return categories;
   }
 
 
-  private jsonDataToCategorie(jsonData: any): Category{    
+  private jsonDataToCategorie(jsonData: any): Category {
     return jsonData as Category;
   }
 
-  private handleError(error: any): Observable<any>{
+  private handleError(error: any): Observable<any> {
     console.log("ERRO NA REQUISIÇÃO => ", error);
     return throwError(error);
   }
